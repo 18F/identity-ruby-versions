@@ -1,0 +1,26 @@
+18f/identity-idp: "ruby 3.3.4p94"
+18f/identity-idp-config: nil
+18f/identity-dashboard: "ruby 3.2.2p53"
+18f/identity-charts: nil
+18f/identity-hostdata: nil
+18f/identity-logging: nil
+18F/omniauth_login_dot_gov: nil
+18f/identity-telephony: nil
+18f/identity-doc-auth: nil
+18f/identity-proofer-gem: nil
+18f/identity-lexisnexis-api-client-gem: nil
+18f/identity-aamva-api-client-gem: nil
+18f/identity-oidc-sinatra: nil
+18f/identity-saml-sinatra: "ruby 3.2.2p223"
+18f/identity-saml-rails: "ruby 2.6.5p114"
+18f/identity-monitor: "ruby 2.5.5p157"
+18f/identity-lambda-functions: nil
+18f/identity-design-assets: nil
+18f/identity-design-system: nil
+18f/identity-handbook-private: nil
+18f/connect.gov: nil
+18f/identity-partners-site: nil
+GSA-TTS/identity-site: "ruby 3.1.3p185"
+GSA-TTS/identity-dev-docs: "ruby 3.2.5p208"
+GSA-TTS/identity-reporting: nil
+GSA-TTS/identity-handbook: "ruby 3.2.2p53"

@@ -5,22 +5,42 @@ require 'bundler'
 require 'pry'
 
 REPOSITORY_URLS = [
-  'git@github.com:18F/identity-base-image.git',
-  'git@github.com:18F/identity-cookbooks.git',
-  'git@github.com:18F/identity-dashboard.git',
-  'git@github.com:18F/identity-devops-private.git',
-  'git@github.com:18F/identity-devops.git',
-  'git@github.com:18F/identity-handbook.git',
-  'git@github.com:18F/identity-idp.git',
-  'git@github.com:18F/identity-lambda-functions.git',
-  'git@github.com:18F/identity-loadtest.git',
-  'git@github.com:18F/identity-oidc-sinatra.git',
-  'git@github.com:18F/identity-pki.git',
-  'git@github.com:18F/identity-security-private.git',
-  'git@github.com:18F/identity-site.git',
-  'git@github.com:18F/identity-terraform.git',
+  'git@github.com:18f/identity-idp.git',
+  'git@github.com:18f/identity-pki PIV/CAC application.git',
+  'git@github.com:18f/identity-idp-config.git',
+  'git@github.com:18f/identity-dashboard.git',
+  'git@github.com:18f/identity-charts.git',
+  'git@github.com:18f/identity-hostdata.git',
+  'git@github.com:18f/identity-logging.git',
+  'git@github.com:18F/omniauth_login_dot_gov.git',
+  'git@github.com:18f/identity-validations.git',
+  'git@github.com:18f/identity-telephony.git',
+  'git@github.com:18f/identity-doc-auth.git',
+  'git@github.com:18f/identity-proofer-gem.git',
+  'git@github.com:18f/identity-lexisnexis-api-client-gem.git',
+  'git@github.com:18f/identity-aamva-api-client-gem.git',
+  'git@github.com:18f/identity-oidc-sinatra.git',
+  'git@github.com:18f/identity-saml-sinatra.git',
+  'git@github.com:18f/saml_idp',
+  'git@github.com:18f/identity-saml-rails.git',
+  'git@github.com:18f/identity-monitor.git',
+  'git@github.com:18f/identity-lambda-functions.git',
+  'git@github.com:18f/identity-design-assets.git',
+  'git@github.com:18f/identity-design-system.git',
+  'git@github.com:18f/identity-handbook-private.git',
+  'git@github.com:18f/connect.gov.git',
+  'git@github.com:18f/identity-partners-site.git',
+  'git@github.com:GSA-TTS/identity-site.git',
   'git@github.com:GSA-TTS/identity-dev-docs.git',
-]
+  'git@github.com:GSA-TTS/identity-reporting.git',
+  'git@github.com:GSA-TTS/identity-handbook.git',
+  # 'lg/identity-devops.git',
+  # 'lg/identity-devops-private.git',
+  # 'lg/identity-terraform.git',
+  # 'lg/identity-cookbooks.git',
+  # 'lg/identity-base-image.git',
+  # 'lg-public/identity-internal-handbook.git'
+].freeze
 
 LOCKFILE_DIR = 'lockfiles'
 
@@ -29,28 +49,29 @@ FileUtils.rm_rf(LOCKFILE_DIR)
 $repository_data = {}
 
 REPOSITORY_URLS.each do |repository_url|
-  repository_name = repository_url[%r{git@github.com:(.*)\.git$},1]
-  base_name = repository_name[%r{.*/([^/]+)$}, 1]
+  begin
+    repository_name = repository_url[%r{git@github.com:(.*)\.git$},1]
+    base_name = repository_name[%r{.*/([^/]+)$}, 1]
 
-  lock_file_dir = "#{LOCKFILE_DIR}/#{base_name}"
-  FileUtils.mkdir_p(lock_file_dir)
+    lock_file_dir = "#{LOCKFILE_DIR}/#{base_name}"
+    FileUtils.mkdir_p(lock_file_dir)
 
-  lockfile_url = "https://api.github.com/repos/#{repository_name}/contents/Gemfile.lock"
-  ruby_version_url = "https://api.github.com/repos/#{repository_name}/contents/.ruby_version"
+    lockfile_url = "https://api.github.com/repos/#{repository_name}/contents/Gemfile.lock"
+    ruby_version_url = "https://api.github.com/repos/#{repository_name}/contents/.ruby_version"
 
-  Dir.chdir lock_file_dir do
-    # This works for plain git, but doesn't work for GitHub; have to
-    # use their API. Maybe useful for GitLab?
-    # `git archive --remote='#{repository_url}' HEAD:Gemfile.lock | tar -x`
+    Dir.chdir lock_file_dir do
+      # This works for plain git, but doesn't work for GitHub; have to
+      # use their API. Maybe useful for GitLab?
+      # `git archive --remote='#{repository_url}' HEAD:Gemfile.lock | tar -x`
 
-    `curl -H 'Accept: application/vnd.github.raw' -O -L #{lockfile_url}`
-    `curl -H 'Accept: application/vnd.github.raw' -O -L #{ruby_version_url}`
+      `curl -H 'Accept: application/vnd.github.raw' -O -L #{lockfile_url}`
+      `curl -H 'Accept: application/vnd.github.raw' -O -L #{ruby_version_url}`
 
-    lockfile = Bundler::LockfileParser.new(Bundler.read_file('Gemfile.lock'))
-    $repository_data[repository_name]= {
-      ruby_version: lockfile.ruby_version.inspect,
-    }
-  end
+      lockfile = Bundler::LockfileParser.new(Bundler.read_file('Gemfile.lock'))
+      $repository_data[repository_name]= {
+        ruby_version: lockfile.ruby_version.inspect,
+      }
+    end
 
   #puts "parsed Gemfile.lock"
 
@@ -76,6 +97,8 @@ REPOSITORY_URLS.each do |repository_url|
   # lockfile.specs.each do |gem|
   #   puts "        #{gem.name}, #{gem.version}"
   # end
+  rescue
+  end
 end
 
 $repository_data.each do |repository, data|
